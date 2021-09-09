@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: 'Cloud9 IDE Environment for on the move development. Stack Name: cloud9-environment'
+
+Parameters:
+
+  EnvironmentName:
+    Type: String
+    Default: Liebanana
+    Description: Name for Cloud9 Environment
+
+  AutomaticStopTimeMinutes:
+    Type: Number
+    Default: 30
+    Description: Enter Automatic Stop Time Minutes for automatic environment shutdown
+
+  ConnectionType:
+    Type: String
+    Default: CONNECT_SSM
+    AllowedValues:
+      - CONNECT_SSM
+      - CONNECT_SSH
+    Description: Connection type to Cloud9 Environment
+  
+  ImageId:
+    Type: String
+    Default: ubuntu-18.04-x86_64
+    AllowedValues:
+      - ubuntu-18.04-x86_64
+      - amazonlinux-2-x86_64
+      - amazonlinux-1-x86_64
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+  
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+
+  OwnerArn:
+    Type: String
+    Default: 'arn:aws:iam::053998275849:user/luis'
+    Description: Enter ARN of IAM Principal to add as owner of the Cloud9 Environment
+
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+    Description: Account Environment Name
+
+Resources:
+  Cloud9:
+    Type: AWS::Cloud9::EnvironmentEC2
+    Properties: 
+      Name: !Ref EnvironmentName
+      AutomaticStopTimeMinutes: !Ref AutomaticStopTimeMinutes
+      ConnectionType: !Ref ConnectionType
+      Description: "Cloud IDE for on the move development"
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      OwnerArn: !Ref OwnerArn
+      Tags: 
+        - Key: Owner
+          Value: luis.lievano
+        - Key: Environment
+          Value: !Ref Environment
